@@ -19,7 +19,7 @@ module LdapAuthentication
       if authenticated_user
         password = "not needed for ldap"
         user     = find_or_create_by_login!(login, { :email                 => authenticated_user.mail.first,
-                                                     :name                  => authenticated_user.displayname.first,
+                                                     :name                  => authenticated_user.try(::Configuration.ldap_displayname_attribute.to_sym).first,
                                                      :password              => password,
                                                      :password_confirmation => password,
                                                      :role                  => User::STANDARD_ROLE,
@@ -27,7 +27,7 @@ module LdapAuthentication
 
         # Use the most recent information from LDAP
         user.update_attributes!(:email => authenticated_user.mail.first,
-                                :name  => authenticated_user.displayname.first)
+                                :name  => authenticated_user.try(::Configuration.ldap_displayname_attribute.to_sym).first)
         user
       else
         authenticate_without_ldap(login, password)
@@ -95,6 +95,10 @@ module LdapAuthentication
 
     def ldap_encryption
       ldap_config :encryption
+    end
+
+    def ldap_displayname_attribute
+      ldap_config :displayname_attribute, :displayname
     end
 
     def ldap_username_attribute

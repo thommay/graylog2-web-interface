@@ -12,6 +12,7 @@ ldap:
 #   encryption: start_tls
 #   port: 389
 #   username_attribute: email
+#   displayname_attribute: displayname
 #   can_search_anonymously: true # Defaults to true. If you set this to false you MUST ensure that you set your 'base' properly
 
 # Settings for stream subscription emails.
